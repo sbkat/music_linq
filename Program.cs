@@ -33,6 +33,7 @@ namespace ConsoleApplication
             //Display all artists with 'William' somewhere in their real name
             List<Artist> AllWilliams = Artists.Where(artist => artist.RealName.Contains("William")).ToList();
             PrintEach(AllWilliams);
+            // Bryan Williams, Robert Williams, William Roberts, William Griffin 
 
             //Display the 3 oldest artist from Atlanta
             List<Artist> OldestArtistsFrAtlanta = Artists.Where(artist => artist.Hometown == "Atlanta").OrderByDescending(artist => artist.Age).Take(3).ToList();
@@ -40,12 +41,19 @@ namespace ConsoleApplication
             // 3 oldest artists from Atlanta: Ludacris (39), Andre 3000 (41), Lil Jon (45)
 
             //(Optional) Display the Group Name of all groups that have members that are not from New York City
-            List<Group> GroupsNotNYC = Groups.Where(group => group.Members.Select(member => member.Hometown != "New York City")).ToList();
+            List<Group> GroupsNotNYC = Groups.Where(group => group.Members.All(member => member.Hometown != "New York City")).ToList();
             PrintEach(GroupsNotNYC);
 
             //(Optional) Display the artist names of all members of the group 'Wu-Tang Clan'
-            List<Artist> WuTangClan = Groups.Where(group => group.GroupName == "Wu-Tang Clan").Select(group => group.Members.Select(member => member.ArtistName)).ToList();
-            PrintEach(WuTangClan);
+            List<IEnumerable<string>> WuTangClan = Groups.Where(group => group.GroupName == "Wu-Tang Clan").Select(group => group.Members.Select(u=>u.ArtistName)).ToList();
+
+            foreach (var group in WuTangClan)
+            {
+                foreach (var member in group)
+                {
+                    Console.WriteLine(member);
+                }
+            }
 
         }
         public static void PrintEach(IEnumerable<dynamic> items)
